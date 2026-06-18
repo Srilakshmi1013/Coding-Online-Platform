@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeArena – Online Coding Platform</title>
+  <meta name="description" content="CodeArena is a premium online coding platform to practice algorithms, data structures, and sharpen your programming skills with real-time progress tracking." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- CodeMirror -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/comment/comment.min.js"></script>
+
+  <!-- Skulpt: Run Python in the browser -->
+  <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+
+  <!-- Our styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+<!-- ==================== TOOLTIP ==================== -->
+<div class="tooltip" id="heatmap-tooltip"></div>
+
+<!-- ==================== AUTH VIEW ==================== -->
+<div id="auth-view" class="view active">
+
+  <!-- Animated canvas background -->
+  <canvas id="hero-canvas"></canvas>
+
+  <!-- Full hero layout -->
+  <div class="hero-layout">
+
+    <!-- LEFT: Hero pitch -->
+    <div class="hero-left">
+
+      <!-- Logo -->
+      <div class="hero-brand">
+        <div class="hero-logo-icon">
+          <span class="logo-bolt">⚡</span>
+        </div>
+        <span class="hero-brand-name">CodeArena</span>
+        <span class="hero-badge-new">BETA</span>
+      </div>
+
+      <!-- Headline with typing effect -->
+      <div class="hero-headline">
+        <h1 class="hero-h1">
+          Master<br/>
+          <span class="hero-gradient-text" id="typing-text">Algorithms.</span>
+        </h1>
+        <p class="hero-sub">
+          A premium coding platform where you sharpen your skills,<br/>
+          track your growth, and compete on real interview problems.
+        </p>
+      </div>
+
+      <!-- Live stats counters -->
+      <div class="hero-stats-row">
+        <div class="hero-stat">
+          <div class="hs-num" data-target="50">0</div>
+          <div class="hs-label">Problems</div>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <div class="hs-num" data-target="3">0</div>
+          <div class="hs-label">Languages</div>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <div class="hs-num" data-target="100">0</div>
+          <div class="hs-label">% Free</div>
+        </div>
+      </div>
+
+      <!-- Floating code window -->
+      <div class="hero-code-window">
+        <div class="hcw-titlebar">
+          <span class="hcw-dot red"></span>
+          <span class="hcw-dot yellow"></span>
+          <span class="hcw-dot green"></span>
+          <span class="hcw-filename">twoSum.js</span>
+        </div>
+        <div class="hcw-body">
+          <div class="hcw-line"><span class="hcw-ln">1</span><span class="tok-keyword">function</span> <span class="tok-fn">twoSum</span><span class="tok-punc">(</span><span class="tok-var">nums</span><span class="tok-punc">,</span> <span class="tok-var">target</span><span class="tok-punc">) {</span></div>
+          <div class="hcw-line"><span class="hcw-ln">2</span>  <span class="tok-keyword">const</span> <span class="tok-var">map</span> <span class="tok-op">=</span> <span class="tok-punc">{};</span></div>
+          <div class="hcw-line hcw-line-active"><span class="hcw-ln">3</span>  <span class="tok-keyword">for</span> <span class="tok-punc">(</span><span class="tok-keyword">let</span> <span class="tok-var">i</span> <span class="tok-op">=</span> <span class="tok-num">0</span><span class="tok-punc">;</span> <span class="tok-var">i</span> <span class="tok-op">&lt;</span> <span class="tok-var">nums</span><span class="tok-punc">.</span><span class="tok-fn">length</span><span class="tok-punc">;</span> <span class="tok-var">i</span><span class="tok-op">++</span><span class="tok-punc">) {</span></div>
+          <div class="hcw-line"><span class="hcw-ln">4</span>    <span class="tok-keyword">const</span> <span class="tok-var">comp</span> <span class="tok-op">=</span> <span class="tok-var">target</span> <span class="tok-op">-</span> <span class="tok-var">nums</span><span class="tok-punc">[</span><span class="tok-var">i</span><span class="tok-punc">];</span></div>
+          <div class="hcw-line"><span class="hcw-ln">5</span>    <span class="tok-keyword">if</span> <span class="tok-punc">(</span><span class="tok-var">map</span><span class="tok-punc">[</span><span class="tok-var">comp</span><span class="tok-punc">]</span> <span class="tok-op">!==</span> <span class="tok-keyword">undefined</span><span class="tok-punc">)</span></div>
+          <div class="hcw-line"><span class="hcw-ln">6</span>      <span class="tok-keyword">return</span> <span class="tok-punc">[</span><span class="tok-var">map</span><span class="tok-punc">[</span><span class="tok-var">comp</span><span class="tok-punc">],</span> <span class="tok-var">i</span><span class="tok-punc">];</span></div>
+          <div class="hcw-line"><span class="hcw-ln">7</span>    <span class="tok-var">map</span><span class="tok-punc">[</span><span class="tok-var">nums</span><span class="tok-punc">[</span><span class="tok-var">i</span><span class="tok-punc">]]</span> <span class="tok-op">=</span> <span class="tok-var">i</span><span class="tok-punc">;</span></div>
+          <div class="hcw-line"><span class="hcw-ln">8</span>  <span class="tok-punc">}</span></div>
+          <div class="hcw-line"><span class="hcw-ln">9</span><span class="tok-punc">}</span> <span class="tok-comment">// O(n) — Accepted ✓</span></div>
+        </div>
+        <!-- Test result chip -->
+        <div class="hcw-result">
+          <span class="hcw-result-dot"></span>
+          All 3 test cases passed &nbsp;·&nbsp; Runtime: 68ms
+        </div>
+      </div>
+
+      <!-- Feature chips -->
+      <div class="hero-chips">
+        <div class="hero-chip" id="chip-leaderboard" onclick="showFeatureModal('leaderboard')"><span>🏆</span> Leaderboard Ranks</div>
+        <div class="hero-chip" id="chip-streak"      onclick="showFeatureModal('streak')"><span>🔥</span> Daily Streaks</div>
+        <div class="hero-chip" id="chip-heatmap"    onclick="showFeatureModal('heatmap')"><span>📊</span> Activity Heatmap</div>
+        <div class="hero-chip" id="chip-exec"       onclick="showFeatureModal('exec')"><span>⚡</span> Live Execution</div>
+        <div class="hero-chip" id="chip-problems"   onclick="showFeatureModal('problems')"><span>🧩</span> 50 Problems</div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Auth card -->
+    <div class="hero-right">
+      <div class="auth-card-new">
+
+        <!-- Glow ring -->
+        <div class="acn-glow"></div>
+
+        <div class="acn-header">
+          <div class="acn-logo">
+            <div class="acn-logo-icon">⚡</div>
+            <div>
+              <div class="acn-logo-name">CodeArena</div>
+              <div class="acn-logo-sub">Start your journey</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="auth-tabs-new">
+          <div class="auth-tab-new active" data-target="login-form-wrapper" id="tab-login">Sign In</div>
+          <div class="auth-tab-new" data-target="register-form-wrapper" id="tab-register">Register</div>
+          <div class="auth-tab-slider" id="tab-slider"></div>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-form-wrapper" class="auth-form active">
+          <div id="login-message" class="auth-message"></div>
+
+          <!-- Social Buttons -->
+          <div class="social-btns">
+            <button class="btn-social btn-google" onclick="socialLogin('google')" id="btn-google-login">
+              <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+              Continue with Google
+            </button>
+            <button class="btn-social btn-github" onclick="socialLogin('github')" id="btn-github-login">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+              Continue with GitHub
+            </button>
+          </div>
+
+          <div class="auth-divider"><span>or sign in with email</span></div>
+
+          <form id="login-form" class="auth-form-inner">
+            <div class="form-group-new">
+              <div class="fgn-icon">✉️</div>
+              <input type="email" id="login-email" placeholder="Email address" required autocomplete="email" class="input-new" />
+            </div>
+            <div class="form-group-new">
+              <div class="fgn-icon">🔒</div>
+              <input type="password" id="login-pass" placeholder="Password" required autocomplete="current-password" class="input-new" />
+            </div>
+            <button type="submit" class="btn-hero-submit" id="btn-login-submit">
+              <span class="bhs-text">Sign In</span>
+              <span class="bhs-arrow">→</span>
+            </button>
+          </form>
+          <p class="auth-hint" style="margin-top:14px">Don't have an account? <span onclick="switchToRegister()" class="auth-link">Register free →</span></p>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form-wrapper" class="auth-form">
+          <div id="reg-message" class="auth-message"></div>
+
+          <!-- Social Buttons -->
+          <div class="social-btns">
+            <button class="btn-social btn-google" onclick="socialLogin('google')" id="btn-google-reg">
+              <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+              Sign up with Google
+            </button>
+            <button class="btn-social btn-github" onclick="socialLogin('github')" id="btn-github-reg">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+              Sign up with GitHub
+            </button>
+          </div>
+
+          <div class="auth-divider"><span>or register with email</span></div>
+
+          <form id="register-form" class="auth-form-inner">
+            <div class="form-group-new">
+              <div class="fgn-icon">👤</div>
+              <input type="text" id="reg-name" placeholder="Full name" required autocomplete="name" class="input-new" />
+            </div>
+            <div class="form-group-new">
+              <div class="fgn-icon">✉️</div>
+              <input type="email" id="reg-email" placeholder="Email address" required autocomplete="email" class="input-new" />
+            </div>
+            <div class="form-group-new">
+              <div class="fgn-icon">🔒</div>
+              <input type="password" id="reg-pass" placeholder="Password (min 6 chars)" required autocomplete="new-password" class="input-new" />
+            </div>
+            <button type="submit" class="btn-hero-submit">
+              <span class="bhs-text">Create Account</span>
+              <span class="bhs-arrow">→</span>
+            </button>
+          </form>
+          <p class="auth-hint" style="margin-top:14px">Already have an account? <span onclick="switchToLogin()" class="auth-link">Sign in →</span></p>
+        </div>
+
+        <!-- Trusted by section -->
+        <div class="acn-footer">
+          <div class="acn-trust">
+            <span class="acn-trust-dot green"></span>
+            Free forever &nbsp;·&nbsp;
+            <span class="acn-trust-dot blue"></span>
+            No credit card &nbsp;·&nbsp;
+            <span class="acn-trust-dot purple"></span>
+            Instant access
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== FEATURE PREVIEW MODAL ==================== -->
+<div id="feature-modal-overlay" class="fm-overlay" onclick="closeFeatureModal(event)">
+  <div class="fm-card" id="fm-card">
+    <button class="fm-close" onclick="closeFeatureModal(null)">&times;</button>
+    <div id="fm-content"></div>
+  </div>
+</div>
+
+<!-- ==================== APP VIEW ==================== -->
+<div id="app-view" class="view">
+
+
+  <!-- ---- NAVBAR ---- -->
+  <nav id="app-nav">
+    <div id="nav-logo" class="nav-logo">
+      <div class="logo-badge">⚡</div>
+      <span>CodeArena</span>
+    </div>
+
+    <div class="nav-links">
+      <button class="nav-link active" id="nav-dashboard">Dashboard</button>
+      <button class="nav-link" id="nav-problems">Problems</button>
+      <button class="nav-link" id="nav-profile">Profile</button>
+    </div>
+
+    <div class="nav-right">
+      <div class="nav-user" id="nav-user-area">
+        <div class="nav-avatar" id="nav-avatar">AB</div>
+        <span class="nav-username" id="nav-username">User</span>
+      </div>
+      <button class="btn-logout" id="btn-logout">Logout</button>
+    </div>
+  </nav>
+
+  <!-- ---- APP CONTENT ---- -->
+  <div class="app-content">
+
+    <!-- ============ DASHBOARD PAGE ============ -->
+    <div class="dashboard-page active">
+
+      <!-- Hero Section -->
+      <div class="dashboard-hero">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h2 id="dash-greeting">Good afternoon! 👋</h2>
+            <p>Keep the momentum going. Today's a great day to solve a problem.</p>
+          </div>
+          <div class="hero-streak">
+            <div class="streak-badge">
+              <div class="streak-num" id="dash-streak">0</div>
+              <div class="streak-label">🔥 Day Streak</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Body -->
+      <div class="dashboard-body">
+        <!-- Main Column -->
+        <div>
+          <!-- Stats Grid -->
+          <div class="stats-grid">
+            <div class="stat-card easy" id="stat-card-easy" style="cursor:pointer" title="View Easy Problems">
+              <div class="stat-top">
+                <span class="stat-label">Easy</span>
+                <span class="stat-badge easy">Easy</span>
+              </div>
+              <div class="stat-numbers">
+                <span class="stat-solved" id="easy-solved">0</span>
+                <span class="stat-total" id="easy-total">/ 20</span>
+              </div>
+              <div class="stat-progress-bar">
+                <div class="stat-progress-fill" id="easy-bar" style="width:0%"></div>
+              </div>
+              <div style="font-size:0.75rem;color:var(--easy);margin-top:10px;font-weight:500">Click to view →</div>
+            </div>
+            <div class="stat-card medium" id="stat-card-medium" style="cursor:pointer" title="View Medium Problems">
+              <div class="stat-top">
+                <span class="stat-label">Medium</span>
+                <span class="stat-badge medium">Medium</span>
+              </div>
+              <div class="stat-numbers">
+                <span class="stat-solved" id="medium-solved">0</span>
+                <span class="stat-total" id="medium-total">/ 20</span>
+              </div>
+              <div class="stat-progress-bar">
+                <div class="stat-progress-fill" id="medium-bar" style="width:0%"></div>
+              </div>
+              <div style="font-size:0.75rem;color:var(--medium);margin-top:10px;font-weight:500">Click to view →</div>
+            </div>
+            <div class="stat-card hard" id="stat-card-hard" style="cursor:pointer" title="View Hard Problems">
+              <div class="stat-top">
+                <span class="stat-label">Hard</span>
+                <span class="stat-badge hard">Hard</span>
+              </div>
+              <div class="stat-numbers">
+                <span class="stat-solved" id="hard-solved">0</span>
+                <span class="stat-total" id="hard-total">/ 10</span>
+              </div>
+              <div class="stat-progress-bar">
+                <div class="stat-progress-fill" id="hard-bar" style="width:0%"></div>
+              </div>
+              <div style="font-size:0.75rem;color:var(--hard);margin-top:10px;font-weight:500">Click to view →</div>
+            </div>
+          </div>
+
+          <!-- Activity Heatmap -->
+          <div class="heatmap-card">
+            <div class="card-title">
+              <span class="title-icon">📅</span>
+              Submission Activity
+            </div>
+            <div class="heatmap-grid" id="heatmap-grid"></div>
+            <div class="heatmap-legend">
+              <span>Less</span>
+              <div class="legend-cell" style="background:var(--bg-tertiary)"></div>
+              <div class="legend-cell" data-count="1" style="background:rgba(57,211,83,0.25)"></div>
+              <div class="legend-cell" data-count="2" style="background:rgba(57,211,83,0.45)"></div>
+              <div class="legend-cell" data-count="3" style="background:rgba(57,211,83,0.65)"></div>
+              <div class="legend-cell" data-count="5" style="background:#39d353"></div>
+              <span>More</span>
+            </div>
+          </div>
+
+          <!-- Featured Problems (clickable) -->
+          <div class="heatmap-card" style="margin-bottom:24px">
+            <div class="card-title">
+              <span class="title-icon">🧩</span>
+              Recommended Problems
+              <span style="margin-left:auto;font-size:0.78rem;color:var(--text-muted);font-weight:400">Click any card to solve</span>
+            </div>
+            <div id="featured-problems" class="featured-problems-grid">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Recent Submissions -->
+          <div class="submissions-card">
+            <div class="card-title">
+              <span class="title-icon">📋</span>
+              Recent Submissions
+            </div>
+            <div id="recent-submissions">
+              <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <p>No submissions yet. Start solving!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="dashboard-sidebar">
+          <div class="profile-card">
+            <div class="profile-avatar-large" id="nav-avatar-profile">AB</div>
+            <div class="profile-name" id="nav-username-profile">User</div>
+            <div class="profile-rank" id="side-rank-display">Beginner</div>
+            <div class="profile-stats">
+              <div class="profile-stat">
+                <div class="ps-num" id="side-total">0</div>
+                <div class="ps-label">Solved</div>
+              </div>
+              <div class="profile-stat">
+                <div class="ps-num" id="side-streak">0</div>
+                <div class="ps-label">Streak</div>
+              </div>
+              <div class="profile-stat">
+                <div class="ps-num" id="side-acceptance">0%</div>
+                <div class="ps-label">Acceptance</div>
+              </div>
+              <div class="profile-stat">
+                <div class="ps-num" id="side-rank">Beginner</div>
+                <div class="ps-label">Rank</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rank-card">
+            <div class="card-title" style="margin-bottom:12px">
+              <span class="title-icon">🏆</span>
+              Your Progress
+            </div>
+            <div class="rank-row">
+              <span class="rr-label">Total Problems</span>
+              <span class="rr-value">50</span>
+            </div>
+            <div class="rank-row">
+              <span class="rr-label">Easy</span>
+              <span class="rr-value" style="color:var(--easy)">20</span>
+            </div>
+            <div class="rank-row">
+              <span class="rr-label">Medium</span>
+              <span class="rr-value" style="color:var(--medium)">20</span>
+            </div>
+            <div class="rank-row">
+              <span class="rr-label">Hard</span>
+              <span class="rr-value" style="color:var(--hard)">10</span>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="rank-card" style="border-color:rgba(31,111,235,0.3)">
+            <div class="card-title" style="margin-bottom:12px">
+              <span class="title-icon">⚡</span>
+              Quick Start
+            </div>
+            <button class="btn-primary" style="width:100%;margin-bottom:8px" onclick="goToRandomProblem()">
+              🎲 Random Problem
+            </button>
+            <button class="btn-primary" style="width:100%;background:linear-gradient(135deg,#1a7a3f,#2a5298)" onclick="goToEasyProblem()">
+              ✅ Pick Easy Problem
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ PROBLEMS PAGE ============ -->
+    <div class="problems-page">
+      <div class="problems-header">
+        <h2>Problems</h2>
+        <p>Practice coding challenges across Easy, Medium, and Hard difficulties.</p>
+      </div>
+
+      <div class="problems-filters">
+        <button class="filter-btn active" data-filter="all" id="filter-all">All</button>
+        <button class="filter-btn easy" data-filter="Easy" id="filter-easy">Easy</button>
+        <button class="filter-btn medium" data-filter="Medium" id="filter-medium">Medium</button>
+        <button class="filter-btn hard" data-filter="Hard" id="filter-hard">Hard</button>
+
+        <div class="search-input-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="problems-search" placeholder="Search problems..." />
+        </div>
+      </div>
+
+      <div class="problems-table-wrapper">
+        <table class="problems-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Difficulty</th>
+              <th>Tags</th>
+              <th>Acceptance</th>
+            </tr>
+          </thead>
+          <tbody id="problems-tbody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ============ PROBLEM SOLVER PAGE ============ -->
+    <div class="solver-page">
+      <button class="back-btn" id="solver-back">← Back to Problems</button>
+
+      <div class="solver-container">
+        <!-- Left: Description Panel -->
+        <div class="solver-left">
+          <div class="solver-tabs">
+            <div class="solver-tab active" data-target="solver-desc-panel">Description</div>
+            <div class="solver-tab" data-target="solver-hints-panel">Hints</div>
+          </div>
+
+          <div class="solver-description">
+            <!-- Description Panel -->
+            <div id="solver-desc-panel" class="solver-panel">
+              <div class="problem-header">
+                <div class="problem-title-row">
+                  <span id="solver-prob-num" style="color:var(--text-muted);font-size:0.9rem">#1</span>
+                  <h2 id="solver-prob-title">Problem Title</h2>
+                  <span class="diff-badge Easy" id="solver-prob-diff">Easy</span>
+                </div>
+                <div class="problem-meta">
+                  <span id="solver-prob-tags" class="prob-tags"></span>
+                  <span class="acc-label" id="solver-prob-acc">Acceptance: 0%</span>
+                </div>
+              </div>
+
+              <div class="problem-body" id="solver-desc-body">
+                <!-- Populated by JS -->
+              </div>
+
+              <div class="examples-section">
+                <h3>Examples</h3>
+                <div id="solver-examples">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+
+              <div class="constraints-section">
+                <h3>Constraints</h3>
+                <div id="solver-constraints">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Hints Panel -->
+            <div id="solver-hints-panel" class="solver-panel" style="display:none">
+              <div style="padding:8px 0">
+                <div class="card-title"><span>💡</span> Hints</div>
+                <div id="solver-hints-body" style="font-size:0.9rem;color:var(--text-secondary);line-height:1.7">
+                  <p style="margin-bottom:12px">Stuck? Here are some general strategies:</p>
+                  <ul style="padding-left:20px;line-height:2">
+                    <li>Start with brute force, then optimize</li>
+                    <li>Think about time & space complexity</li>
+                    <li>Consider edge cases (empty input, negatives, duplicates)</li>
+                    <li>Draw out small examples on paper</li>
+                    <li>Look for patterns — sorted arrays → binary search, subarrays → sliding window</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Editor Panel -->
+        <div class="solver-right">
+          <div class="editor-toolbar">
+            <div class="lang-selector">
+              <span style="font-size:0.8rem;color:var(--text-muted)">Language:</span>
+              <select class="lang-select" id="lang-select">
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+                <option value="java">Java</option>
+              </select>
+            </div>
+
+            <!-- ===== TIMER WIDGET ===== -->
+            <div class="timer-widget" id="timer-widget">
+              <div class="timer-icon" id="timer-toggle-icon" title="Start/Pause Timer" onclick="timerToggle()">▶️</div>
+              <div class="timer-display" id="timer-display">00:00</div>
+              <button class="timer-btn" id="timer-start-btn" onclick="timerToggle()" title="Start / Pause">Start</button>
+              <button class="timer-btn timer-reset-btn" onclick="timerReset()" title="Reset timer">↺</button>
+              <div class="timer-laps-btn" onclick="timerLap()" title="Record lap">⚑</div>
+            </div>
+
+            <div class="editor-actions">
+              <button class="btn-run" id="btn-run">
+                <span>▶️</span> Run
+              </button>
+              <button class="btn-submit" id="btn-submit">
+                <span>⬆️</span> Submit
+              </button>
+            </div>
+          </div>
+
+          <div class="code-editor-wrapper">
+            <div id="code-editor-mount" style="height:100%"></div>
+          </div>
+
+          <!-- Lap History Panel (hidden until a lap is recorded) -->
+          <div id="timer-laps-panel" class="timer-laps-panel" style="display:none">
+            <div class="tlp-header">
+              <span>⚑ Lap Times</span>
+              <button class="tlp-clear" onclick="timerClearLaps()">Clear</button>
+            </div>
+            <div id="timer-laps-list" class="tlp-list"></div>
+          </div>
+
+          <!-- Output Panel -->
+          <div id="editor-output" class="editor-output">
+            <div class="output-header">
+              <span>Output</span>
+              <button class="output-toggle" id="output-toggle">▼</button>
+            </div>
+            <div class="output-body" id="output-body">
+              <div style="color:var(--text-muted);font-size:0.82rem">Run your code to see results here.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ PROFILE PAGE ============ -->
+    <div class="profile-page">
+      <div class="profile-page-content">
+
+        <!-- Profile Header -->
+        <div class="profile-page-header">
+          <div class="profile-avatar-xl" id="profile-initials">AB</div>
+          <div class="profile-info">
+            <h2 id="profile-name">User Name</h2>
+            <p id="profile-email">user@example.com</p>
+            <p id="profile-rank-label" style="color:var(--accent-blue-hover);font-weight:600;font-size:0.9rem;margin-bottom:16px">Beginner</p>
+            <div class="profile-badges" id="profile-badges">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="profile-stats-grid">
+          <div class="profile-stat-card">
+            <div class="psc-num" id="profile-total">0</div>
+            <div class="psc-label">Problems Solved</div>
+          </div>
+          <div class="profile-stat-card">
+            <div class="psc-num" id="profile-streak">0</div>
+            <div class="psc-label">Day Streak 🔥</div>
+          </div>
+          <div class="profile-stat-card">
+            <div class="psc-num" id="profile-acceptance">0%</div>
+            <div class="psc-label">Acceptance Rate</div>
+          </div>
+        </div>
+
+        <!-- Breakdown -->
+        <div class="solved-breakdown">
+          <div class="card-title" style="margin-bottom:20px"><span>📊</span> Solved Breakdown</div>
+          <div class="breakdown-row">
+            <span class="br-label easy">Easy</span>
+            <div class="br-bar"><div class="br-fill easy" id="easy-br-fill" style="width:0%"></div></div>
+            <span class="br-count" id="easy-br-count">0 / 20</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="br-label medium">Medium</span>
+            <div class="br-bar"><div class="br-fill medium" id="medium-br-fill" style="width:0%"></div></div>
+            <span class="br-count" id="medium-br-count">0 / 20</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="br-label hard">Hard</span>
+            <div class="br-bar"><div class="br-fill hard" id="hard-br-fill" style="width:0%"></div></div>
+            <span class="br-count" id="hard-br-count">0 / 10</span>
+          </div>
+        </div>
+
+        <!-- Account Info -->
+        <div class="solved-breakdown" style="margin-top:16px">
+          <div class="card-title" style="margin-bottom:16px"><span>🗓️</span> Account Info</div>
+          <div class="rank-row">
+            <span class="rr-label">Member Since</span>
+            <span class="rr-value" id="profile-joined">—</span>
+          </div>
+          <div class="rank-row">
+            <span class="rr-label">Email</span>
+            <span class="rr-value" id="profile-email-2">—</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- end .app-content -->
+</div><!-- end #app-view -->
+
+<!-- Scripts -->
+<script src="problems.js"></script>
+<script src="app.js"></script>
+
+<script>
+  // Quick-action helpers
+  function goToRandomProblem() {
+    const idx = Math.floor(Math.random() * PROBLEMS.length);
+    const prob = PROBLEMS[idx];
+    document.getElementById('nav-problems').click();
+    setTimeout(() => openProblem(prob.id), 100);
+  }
+
+  function goToEasyProblem() {
+    const easy = PROBLEMS.filter(p => p.difficulty === 'Easy');
+    const prob = easy[Math.floor(Math.random() * easy.length)];
+    document.getElementById('nav-problems').click();
+    setTimeout(() => openProblem(prob.id), 100);
+  }
+
+  // =============================================
+  // PROBLEM TIMER ENGINE
+  // =============================================
+  const timerState = {
+    seconds: 0,
+    running: false,
+    intervalId: null,
+    laps: [],
+    lastLapSeconds: 0,
+    warningAt: 1800,  // 30 min → yellow
+    dangerAt:  3600,  // 60 min → red
+  };
+
+  function timerFormat(sec) {
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    const s = sec % 60;
+    if (h > 0) return ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')};
+    return ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')};
+  }
+
+  function timerUpdateUI() {
+    const disp = document.getElementById('timer-display');
+    const widget = document.getElementById('timer-widget');
+    const startBtn = document.getElementById('timer-start-btn');
+    const iconEl = document.getElementById('timer-toggle-icon');
+    if (!disp || !widget) return;
+
+    disp.textContent = timerFormat(timerState.seconds);
+
+    // Color states
+    widget.classList.remove('running','paused','warning','danger');
+    if (timerState.running) {
+      widget.classList.add('running');
+      if (timerState.seconds >= timerState.dangerAt)  widget.classList.add('danger');
+      else if (timerState.seconds >= timerState.warningAt) widget.classList.add('warning');
+    } else if (timerState.seconds > 0) {
+      widget.classList.add('paused');
+    }
+
+    if (startBtn) startBtn.textContent = timerState.running ? 'Pause' : (timerState.seconds > 0 ? 'Resume' : 'Start');
+    if (iconEl)   iconEl.textContent   = timerState.running ? '⏸️' : '▶️';
+  }
+
+  function timerTick() {
+    timerState.seconds++;
+    timerUpdateUI();
+  }
+
+  function timerToggle() {
+    if (timerState.running) {
+      // Pause
+      clearInterval(timerState.intervalId);
+      timerState.intervalId = null;
+      timerState.running = false;
+    } else {
+      // Start / Resume
+      timerState.running = true;
+      timerState.intervalId = setInterval(timerTick, 1000);
+    }
+    timerUpdateUI();
+  }
+
+  function timerReset() {
+    clearInterval(timerState.intervalId);
+    timerState.intervalId = null;
+    timerState.running = false;
+    timerState.seconds = 0;
+    timerState.laps = [];
+    timerState.lastLapSeconds = 0;
+    timerUpdateUI();
+    // Clear lap panel
+    const panel = document.getElementById('timer-laps-panel');
+    const list  = document.getElementById('timer-laps-list');
+    if (panel) panel.style.display = 'none';
+    if (list)  list.innerHTML = '';
+  }
+
+  function timerLap() {
+    if (!timerState.running && timerState.seconds === 0) return;
+    const lapTime = timerState.seconds;
+    const delta   = lapTime - timerState.lastLapSeconds;
+    const lapNum  = timerState.laps.length + 1;
+
+    // Compare to previous lap delta
+    let deltaClass = '';
+    let deltaSymbol = '';
+    if (timerState.laps.length > 0) {
+      const prevDelta = timerState.laps[timerState.laps.length - 1].delta;
+      if (delta < prevDelta) { deltaClass = 'faster'; deltaSymbol = '▲ '; }
+      else if (delta > prevDelta) { deltaClass = 'slower'; deltaSymbol = '▼ '; }
+    }
+
+    timerState.laps.push({ lapNum, lapTime, delta, deltaClass });
+    timerState.lastLapSeconds = lapTime;
+
+    // Render
+    const list  = document.getElementById('timer-laps-list');
+    const panel = document.getElementById('timer-laps-panel');
+    if (!list || !panel) return;
+
+    panel.style.display = 'block';
+    const item = document.createElement('div');
+    item.className = 'tlp-item';
+    item.innerHTML = `
+      <span class="tlp-lap-num">Lap ${lapNum}</span>
+      <span class="tlp-lap-time">${timerFormat(lapTime)}</span>
+      <span class="tlp-lap-delta ${deltaClass}">${deltaSymbol}+${timerFormat(delta)}</span>`;
+    list.appendChild(item);
+    list.scrollTop = list.scrollHeight;
+  }
+
+  function timerClearLaps() {
+    timerState.laps = [];
+    timerState.lastLapSeconds = 0;
+    const list  = document.getElementById('timer-laps-list');
+    const panel = document.getElementById('timer-laps-panel');
+    if (list)  list.innerHTML = '';
+    if (panel) panel.style.display = 'none';
+  }
+
+  function timerStop() {
+    clearInterval(timerState.intervalId);
+    timerState.intervalId = null;
+    timerState.running = false;
+    timerUpdateUI();
+    return timerState.seconds;
+  }
+
+  // Auto-reset timer whenever a new problem is opened
+  // Patch into app.js's openProblem via event
+  document.addEventListener('problemOpened', () => {
+    timerReset();
+    // Auto-start after 1 s so user can read first
+    setTimeout(() => { if (!timerState.running) timerToggle(); }, 800);
+  });
+
+  // =============================================
+  // HERO PAGE INTERACTIONS
+  // =============================================
+
+  // ---- Canvas Particle System ----
+  (function initHeroCanvas() {
+    const canvas = document.getElementById('hero-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [], mouse = { x: -9999, y: -9999 };
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    window.addEventListener('mousemove', e => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    // Create particles
+    const PARTICLE_COUNT = 80;
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        r: Math.random() * 1.8 + 0.4,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        alpha: Math.random() * 0.5 + 0.1,
+        color: ['#1f6feb','#8957e5','#58a6ff','#d2a8ff','#ffa657'][Math.floor(Math.random()*5)]
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+
+      // Draw connections
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.strokeStyle = rgba(88,166,255,${0.08 * (1 - dist/120)});
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw particles
+      for (const p of particles) {
+        // Mouse repulsion
+        const mdx = p.x - mouse.x;
+        const mdy = p.y - mouse.y;
+        const mdist = Math.sqrt(mdx*mdx + mdy*mdy);
+        if (mdist < 100) {
+          const force = (100 - mdist) / 100 * 0.8;
+          p.vx += (mdx / mdist) * force;
+          p.vy += (mdy / mdist) * force;
+        }
+
+        // Speed limit
+        const speed = Math.sqrt(p.vx*p.vx + p.vy*p.vy);
+        if (speed > 1.5) { p.vx *= 0.95; p.vy *= 0.95; }
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // Wrap
+        if (p.x < 0) p.x = W;
+        if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H;
+        if (p.y > H) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+  })();
+
+  // ---- Typing Animation ----
+  (function initTyping() {
+    const el = document.getElementById('typing-text');
+    if (!el) return;
+    const words = ['Algorithms.', 'Data Structures.', 'Problem Solving.', 'Coding Skills.', 'Your Potential.'];
+    let wi = 0, ci = 0, deleting = false;
+    const cursor = '<span style="border-right:3px solid #ffa657;margin-left:2px;animation:blink 0.8s step-end infinite"></span>';
+
+    function type() {
+      const word = words[wi];
+      if (!deleting) {
+        ci++;
+        el.innerHTML = word.slice(0, ci) + cursor;
+        if (ci === word.length) {
+          deleting = true;
+          setTimeout(type, 1800);
+          return;
+        }
+        setTimeout(type, 80);
+      } else {
+        ci--;
+        el.innerHTML = word.slice(0, ci) + cursor;
+        if (ci === 0) {
+          deleting = false;
+          wi = (wi + 1) % words.length;
+          setTimeout(type, 400);
+          return;
+        }
+        setTimeout(type, 40);
+      }
+    }
+    setTimeout(type, 1000);
+  })();
+
+  // ---- Stat Counter Animation ----
+  (function initCounters() {
+    const els = document.querySelectorAll('.hs-num');
+    if (!els.length) return;
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const target = +el.dataset.target;
+          let current = 0;
+          const step = target / 60;
+          const timer = setInterval(() => {
+            current = Math.min(current + step, target);
+            el.textContent = Math.round(current) + (target === 100 ? '' : '');
+            if (current >= target) clearInterval(timer);
+          }, 16);
+          observer.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+    els.forEach(el => observer.observe(el));
+  })();
+
+  // ---- Sliding Tab Indicator ----
+  (function initHeroTabs() {
+    const tabs = document.querySelectorAll('.auth-tab-new');
+    const slider = document.getElementById('tab-slider');
+    if (!tabs.length || !slider) return;
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => { t.classList.remove('active'); });
+        tab.classList.add('active');
+        slider.classList.toggle('right', i === 1);
+
+        // Show/hide forms
+        document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+        const target = document.getElementById(tab.dataset.target);
+        if (target) target.classList.add('active');
+
+        // Clear messages
+        document.querySelectorAll('.auth-message').forEach(m => { m.className = 'auth-message'; m.textContent = ''; });
+      });
+    });
+  })();
+
+  // ---- Tab switch helpers ----
+  function switchToRegister() {
+    document.getElementById('tab-register').click();
+  }
+
+  function switchToLogin() {
+    document.getElementById('tab-login').click();
+  }
+
+  // ---- Demo Login ----
+  function demoLogin() {
+    const users = Storage.getUsers();
+    const demoEmail = 'demo@codearena.io';
+    if (!users[demoEmail]) {
+      users[demoEmail] = { name: 'Demo User', email: demoEmail, password: 'demo123', joinedAt: Date.now() - 86400000 * 30 };
+      Storage.saveUsers(users);
+    }
+    loginUser(demoEmail, 'demo123');
+  }
+
+  // ---- Social Login (Google / GitHub simulation) ----
+  const SOCIAL_PROFILES = {
+    google: {
+      names: ['Alex Johnson', 'Sam Rivera', 'Jordan Lee', 'Casey Morgan', 'Taylor Kim'],
+      domain: 'gmail.com',
+      badge: '🔵 Google',
+      color: '#4285F4',
+      icon: <svg width="14" height="14" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>,
+    },
+    github: {
+      names: ['dev_coder', 'code_ninja', 'hack_star', 'byte_wizard', 'algo_queen'],
+      domain: 'github.com',
+      badge: '⚫ GitHub',
+      color: '#e6edf3',
+      icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>,
+    }
+  };
+
+  function socialLogin(provider) {
+    const profile = SOCIAL_PROFILES[provider];
+    if (!profile) return;
+
+    // Add loading state to both buttons of this provider
+    document.querySelectorAll(.btn-${provider}).forEach(btn => {
+      btn.classList.add('loading');
+      btn.textContent = 'Connecting...';
+    });
+
+    // Simulate OAuth popup → redirect delay
+    setTimeout(() => {
+      // Generate or retrieve a deterministic social user
+      const users = Storage.getUsers();
+      const socialKey = __social_${provider}__;
+
+      // Check if a social user for this provider already exists in this browser
+      let socialEmail = localStorage.getItem(socialKey);
+      if (!socialEmail || !users[socialEmail]) {
+        // Create a new social user
+        const idx = Math.floor(Math.random() * profile.names.length);
+        const name = profile.names[idx];
+        const handle = name.toLowerCase().replace(/[^a-z0-9]/g, '') + Math.floor(Math.random() * 999);
+        socialEmail = ${handle}@${profile.domain};
+
+        users[socialEmail] = {
+          name,
+          email: socialEmail,
+          password: '_oauth_',
+          provider,
+          joinedAt: Date.now(),
+          avatar: provider === 'google' ? '🔵' : '⚫'
+        };
+        Storage.saveUsers(users);
+        localStorage.setItem(socialKey, socialEmail);
+      }
+
+      // Remove loading state
+      document.querySelectorAll(.btn-${provider}).forEach(btn => {
+        btn.classList.remove('loading');
+      });
+
+      // Log in the social user
+      loginUser(socialEmail, '_oauth_');
+
+      // Show a provider badge notification
+      if (typeof showNotification === 'function') {
+        showNotification(Signed in with ${provider.charAt(0).toUpperCase() + provider.slice(1)} ✓, 'success');
+      }
+    }, 1200);
+  }
+
+  // =============================================
+  // FEATURE PREVIEW MODALS
+  // =============================================
+  let _activeChip = null;
+
+  function showFeatureModal(type) {
+    const overlay = document.getElementById('feature-modal-overlay');
+    const content = document.getElementById('fm-content');
+    if (!overlay || !content) return;
+    document.querySelectorAll('.hero-chip').forEach(c => c.classList.remove('chip-active'));
+    const chipMap = { leaderboard:'chip-leaderboard', streak:'chip-streak', heatmap:'chip-heatmap', exec:'chip-exec', problems:'chip-problems' };
+    const chip = document.getElementById(chipMap[type]);
+    if (chip) chip.classList.add('chip-active');
+    _activeChip = chip;
+    const builders = { leaderboard:buildLeaderboardModal, streak:buildStreakModal, heatmap:buildHeatmapModal, exec:buildExecModal, problems:buildProblemsModal };
+    content.innerHTML = (builders[type] || (() => ''))();
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    if (type === 'heatmap') renderMiniHeatmap();
+  }
+
+  function closeFeatureModal(e) {
+    if (e && e.target !== document.getElementById('feature-modal-overlay')) return;
+    const overlay = document.getElementById('feature-modal-overlay');
+    if (overlay) overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    if (_activeChip) { _activeChip.classList.remove('chip-active'); _activeChip = null; }
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFeatureModal(null); });
+
+  function buildLeaderboardModal() {
+    const users = [
+      { rank:1, cls:'gold',   init:'AK', color:'#1f6feb', name:'Alex Kim',   handle:'@alexkim',   pts:4820, diff:'+120', dc:'up' },
+      { rank:2, cls:'silver', init:'SR', color:'#8957e5', name:'Sara Roth',  handle:'@sara_r',    pts:4650, diff:'+88',  dc:'up' },
+      { rank:3, cls:'bronze', init:'MC', color:'#3fb950', name:'Mike Chen',  handle:'@m_chen',    pts:4310, diff:'-40',  dc:'down' },
+      { rank:4, cls:'normal', init:'JP', color:'#d29922', name:'Julia Park', handle:'@juliapark', pts:3990, diff:'+55',  dc:'up' },
+      { rank:5, cls:'normal', init:'TW', color:'#f85149', name:'Tom Wright', handle:'@tomw',      pts:3740, diff:'+22',  dc:'up' },
+      { rank:0, cls:'normal', init:'YO', color:'#58a6ff', name:'You',        handle:'@you',       pts:'—',  diff:'',    dc:'', you:true }
+    ];
+    const rows = users.map(u => <div class="lb-row ${u.you?'lb-you-row':''}"><div class="lb-rank ${u.cls}">${u.rank||'?'}</div><div class="lb-avatar" style="background:${u.color}">${u.init}</div><div class="lb-info"><div class="lb-name">${u.name}${u.you?' <span style="font-size:.72rem;color:#58a6ff">(you)</span>':''}</div><div class="lb-sub">${u.handle}</div></div><div style="text-align:right"><div class="lb-pts">${u.pts}</div>${u.diff?'<div class="lb-diff '+u.dc+'">'+(u.dc==='up'?'▲':'▼')+' '+u.diff+' pts</div>':''}</div></div>).join('');
+    return <div class="fm-header"><div class="fm-header-icon gold">🏆</div><div class="fm-header-text"><h3>Global Leaderboard</h3><p>Compete with coders worldwide. Earn points by solving problems — harder problems give more points!</p></div></div><div class="fm-leaderboard">${rows}</div><div class="lb-cta">Sign in to claim your spot → <span onclick="closeFeatureModal(null);switchToRegister()">Create account</span></div>;
+  }
+
+  function buildStreakModal() {
+    const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const todayIdx = (new Date().getDay() + 6) % 7;
+    const statuses = days.map((_,i) => i < todayIdx-4 ? 'missed' : i < todayIdx ? 'solved' : i === todayIdx ? 'today' : 'future');
+    const cells = days.map((d,i) => <div class="streak-day ${statuses[i]}"><div class="sd-name">${d}</div>${statuses[i]==='solved'?'✓':statuses[i]==='today'?'⚡':statuses[i]==='missed'?'✗':'·'}</div>).join('');
+    return <div class="fm-header"><div class="fm-header-icon orange">🔥</div><div class="fm-header-text"><h3>Daily Streaks</h3><p>Solve at least one problem every day to maintain your streak. Longer streaks unlock bonus badges!</p></div></div><div class="streak-modal-top"><div class="streak-stat-box fire"><div class="ssb-num fire">12</div><div class="ssb-label">Current Streak</div></div><div class="streak-stat-box blue"><div class="ssb-num blue">47</div><div class="ssb-label">Best Streak</div></div><div class="streak-stat-box green"><div class="ssb-num green">130</div><div class="ssb-label">Days Active</div></div></div><div class="streak-week-label">This Week</div><div class="streak-days">${cells}</div><div class="streak-tip">🔥 <strong>Pro tip:</strong> Solve a problem before midnight every day to keep your streak alive. Missing one day resets it to 0!</div>;
+  }
+
+  function buildHeatmapModal() {
+    return <div class="fm-header"><div class="fm-header-icon blue">📊</div><div class="fm-header-text"><h3>Activity Heatmap</h3><p>Your full year of coding activity at a glance. Each cell is one day — hover to see how many problems you solved.</p></div></div><div id="mini-heatmap-container" class="mini-heatmap-grid"></div><div style="display:flex;align-items:center;gap:6px;font-size:.75rem;color:#484f58;margin-top:4px"><span>Less</span><div class="mini-heatmap-cell"></div><div class="mini-heatmap-cell c1"></div><div class="mini-heatmap-cell c2"></div><div class="mini-heatmap-cell c3"></div><div class="mini-heatmap-cell c4"></div><div class="mini-heatmap-cell c5"></div><span>More</span></div><div class="heatmap-stats-row"><div class="hm-stat"><div class="hms-num">130</div><div class="hms-label">Active Days</div></div><div class="hm-stat"><div class="hms-num">47</div><div class="hms-label">Problems Solved</div></div><div class="hm-stat"><div class="hms-num">12</div><div class="hms-label">Day Streak 🔥</div></div></div>;
+  }
+
+  function renderMiniHeatmap() {
+    const c = document.getElementById('mini-heatmap-container');
+    if (!c) return;
+    for (let w = 0; w < 26; w++) {
+      const col = document.createElement('div');
+      col.className = 'mini-heatmap-week';
+      for (let d = 0; d < 7; d++) {
+        const cell = document.createElement('div');
+        cell.className = 'mini-heatmap-cell';
+        const r = Math.random();
+        if (r > 0.72) {
+          const lv = Math.ceil(Math.random() * 5);
+          cell.classList.add('c' + lv);
+          cell.title = (lv*2-1) + ' submission(s)';
+        }
+        col.appendChild(cell);
+      }
+      c.appendChild(col);
+    }
+  }
+
+  function buildExecModal() {
+    return <div class="fm-header"><div class="fm-header-icon cyan">⚡</div><div class="fm-header-text"><h3>Live Code Execution</h3><p>Write JavaScript and run it instantly in your browser — no setup, no installs. Try editing the code below!</p></div></div><div class="exec-demo-editor"><div class="exec-demo-bar"><span>▶️</span> Interactive Demo &nbsp;·&nbsp; JavaScript</div><div class="exec-demo-code" id="exec-editable" contenteditable="true" spellcheck="false" style="outline:none;min-height:90px">function factorial(n) {\n  if (n <= 1) return 1;\n  return n * factorial(n - 1);\n}\nconsole.log(factorial(10));</div><div class="exec-demo-output" id="exec-output"><span style="color:#484f58">▶️ Output appears here — click Run!</span></div></div><button class="exec-run-btn" onclick="runExecDemo()">▶️ &nbsp;Run Code</button>;
+  }
+
+  function runExecDemo() {
+    const out = document.getElementById('exec-output');
+    const editor = document.getElementById('exec-editable');
+    if (!out || !editor) return;
+    const code = editor.innerText;
+    const logs = [];
+    try {
+      new Function('console', code)({ log: (...a) => logs.push(a.map(x => typeof x==='object'?JSON.stringify(x):String(x)).join(' ')) });
+      out.innerHTML = logs.length ? '<span style="color:#3fb950">●</span> ' + logs.join('<br>') : '<span style="color:#484f58">No output produced.</span>';
+    } catch(e) { out.innerHTML = '<span style="color:#f85149">● Error: ' + e.message + '</span>'; }
+  }
+
+  function buildProblemsModal() {
+    const sample = (typeof PROBLEMS !== 'undefined' ? PROBLEMS : []).slice(0, 8);
+    const items = sample.map(p => <div class="prob-preview-item" onclick="previewGoToProblem(${p.id})"><div class="ppi-left"><span class="ppi-num">#${p.id}</span><div><div class="ppi-title">${p.title}</div><div class="ppi-tags">${p.tags.slice(0,2).map(t=>'<span class="ppi-tag">'+t+'</span>').join('')}</div></div></div><span class="diff-badge ${p.difficulty}">${p.difficulty}</span></div>).join('');
+    return <div class="fm-header"><div class="fm-header-icon purple">🧩</div><div class="fm-header-text"><h3>50 Curated Problems</h3><p>From Two Sum to Trapping Rain Water — 20 Easy, 20 Medium, 10 Hard. Every key interview topic covered.</p></div></div><div class="prob-preview-list">${items}</div><button class="fm-view-all" onclick="previewGoToProblem(null)">View All 50 Problems →</button>;
+  }
+
+  function previewGoToProblem(id) {
+    closeFeatureModal(null);
+    demoLogin();
+    if (id) setTimeout(() => openProblem(id), 500);
+    else setTimeout(() => { const n = document.getElementById('nav-problems'); if(n) n.click(); }, 500);
+  }
+
+  // ---- Code window line highlight cycle ----
+  (function cycleHighlight() {
+    const lines = document.querySelectorAll('.hcw-line');
+    if (!lines.length) return;
+    let active = 2;
+    setInterval(() => {
+      lines.forEach(l => l.classList.remove('hcw-line-active'));
+      active = (active + 1) % lines.length;
+      lines[active].classList.add('hcw-line-active');
+    }, 1200);
+  })();
+
+</script>
+
+</body>
+</html
