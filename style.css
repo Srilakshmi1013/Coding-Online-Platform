@@ -91,7 +91,7 @@ body {
 
 .hero-layout {
   position: relative;
-  z-index: 1;
+  z-index: 3;
   display: grid;
   grid-template-columns: 1fr 460px;
   width: 100%;
